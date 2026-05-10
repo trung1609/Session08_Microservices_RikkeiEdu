@@ -17,12 +17,9 @@ public class AppointmentController {
     private final AppointmentService appointmentService;
 
     @PostMapping
-    public ResponseEntity<Object> createAppointment(@RequestBody Appointment appointment) {
-        Object response = appointmentService.createAppointment(appointment);
-        if (response instanceof ApiResponseError) {
-            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(response);
-        }
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    public ResponseEntity<Appointment> createAppointment(@RequestBody Appointment appointment) {
+        Appointment result = (Appointment) appointmentService.createAppointment(appointment);
+        return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
     @GetMapping

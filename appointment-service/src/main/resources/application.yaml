@@ -30,6 +30,17 @@ resilience4j:
         minimum-number-of-calls: 5
         wait-duration-in-open-state: 10s
         permitted-number-of-calls-in-half-open-state: 3
+        ignore-exceptions:
+          - jakarta.persistence.EntityNotFoundException
+    circuit-breaker-aspect-order: 2
+
+  ratelimiter:
+    instances:
+        doctorServiceRL:
+            limit-for-period: 3
+            limit-refresh-period: 10s
+            timeout-duration: 0s
+    rate-limiter-aspect-order: 1
 
   retry:
     instances:
@@ -38,6 +49,9 @@ resilience4j:
         wait-duration: 2s
         retry-exceptions:
           - org.springframework.web.client.ResourceAccessException
+        ignore-exceptions:
+          - jakarta.persistence.EntityNotFoundException
+    retry-aspect-order: 3
 
 logging:
   level:

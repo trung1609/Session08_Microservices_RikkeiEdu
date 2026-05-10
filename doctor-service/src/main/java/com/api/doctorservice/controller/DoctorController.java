@@ -25,7 +25,12 @@ public class DoctorController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DoctorDTO> getDoctorById(@PathVariable Long id) {
-        return ResponseEntity.ok(doctorService.getDoctorById(id));
+    public ResponseEntity<Object> getDoctorById(@PathVariable Long id) {
+        Object response = doctorService.getDoctorById(id);
+        if (response instanceof DoctorDTO) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(429).body(response);
+        }
     }
 }

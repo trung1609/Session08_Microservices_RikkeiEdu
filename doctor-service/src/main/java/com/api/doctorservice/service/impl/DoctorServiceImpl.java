@@ -1,9 +1,11 @@
 package com.api.doctorservice.service.impl;
 
+import com.api.doctorservice.dto.ApiError;
 import com.api.doctorservice.dto.DoctorDTO;
 import com.api.doctorservice.entity.Doctor;
 import com.api.doctorservice.repository.DoctorRepository;
 import com.api.doctorservice.service.DoctorService;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +38,8 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public DoctorDTO getDoctorById(Long id) {
+    @RateLimiter(name = "searchDoctorLimit", fallbackMethod = "searchDoctorLimitFallback")
+    public Object getDoctorById(Long id) {
         return doctorRepository.findById(id)
                 .map(doctor -> DoctorDTO.builder()
                         .id(doctor.getId())
@@ -44,5 +47,13 @@ public class DoctorServiceImpl implements DoctorService {
                         .specialization(doctor.getSpecialization())
                         .build())
                 .orElseThrow(() -> new RuntimeException("Doctor not found"));
+    }
+
+    public Object searchDoctorLimitFallback(Long id, Throwable throwable) {
+        return new ApiError(
+                "Error",
+                "Bạn đã gửi quá 5 request mỗi 10 giây",
+                429
+        );
     }
 }

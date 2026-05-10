@@ -7,6 +7,7 @@ import com.api.appointmentservice.service.AppointmentService;
 import com.api.appointmentservice.service.client.DoctorClient;
 import com.api.appointmentservice.service.client.PatientClient;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     @CircuitBreaker(name = "doctorServiceCB", fallbackMethod = "createAppointmentFallback")
+    @Retry(name = "patientRetry")
     public Object createAppointment(Appointment appointment) {
         if (doctorClient.getDoctorById(appointment.getDoctorId()) == null) {
             throw new RuntimeException("Doctor not found with id: " + appointment.getDoctorId());

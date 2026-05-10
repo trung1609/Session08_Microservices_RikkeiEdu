@@ -28,3 +28,8 @@ resilience4j:
         limit-for-period: 5
         limit-refresh-period: 10s
         timeout-duration: 0s
+
+  timelimiter:
+    instances:
+        searchDoctorTimeLimit:
+            timeout-duration: 1s

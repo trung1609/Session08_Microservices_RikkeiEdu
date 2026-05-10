@@ -38,6 +38,7 @@ resilience4j:
         wait-duration: 2s
         retry-exceptions:
           - org.springframework.web.client.ResourceAccessException
+
 logging:
   level:
     io.github.resilience4j: INFO
